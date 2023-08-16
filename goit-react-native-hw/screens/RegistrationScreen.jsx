@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
    View,
    ImageBackground,
@@ -8,65 +8,109 @@ import {
    Button,
    TouchableOpacity,
    Image,
+   Dimensions,
+   KeyboardAvoidingView,
+   Platform,
+   TouchableWithoutFeedback,
+   Keyboard,
 } from "react-native";
 
 const RegistrationScreen = () => {
+   const [login, setLogin] = useState("");
+   const [email, setEmail] = useState("");
+   const [password, setPassword] = useState("");
+
    const [isFirstInputFocused, setIsFirstInputFocused] = useState(false);
    const [isSecondInputFocused, setIsSecondInputFocused] = useState(false);
    const [isThirdInputFocused, setIsThirdInputFocused] = useState(false);
+
+   const signIn = (e) => {
+      e.preventDefault();
+
+      const userData = {
+         login,
+         email,
+         password,
+      };
+
+      console.log(userData);
+
+      setLogin("");
+      setEmail("");
+      setPassword("");
+   };
 
    return (
       <ImageBackground
          source={require("../assets/bck-photo.jpg")}
          style={styles.imageBackground}
       >
-         <View style={styles.container}>
-            <Image
-               source={require("../assets/user-photo.jpg")}
-               style={styles.userPhoto}
-            />
+         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+               <Image
+                  source={require("../assets/user-photo.jpg")}
+                  style={styles.userPhoto}
+               />
 
-            <Text style={styles.registerText}>Реєстрація</Text>
-            <TextInput
-               placeholder="Логін"
-               style={[isFirstInputFocused ? styles.activeInput : styles.input]}
-               onFocus={() => setIsFirstInputFocused(true)}
-               onBlur={() => setIsFirstInputFocused(false)}
-            />
-            <TextInput
-               placeholder="Адреса електронної пошти"
-               style={[
-                  isSecondInputFocused ? styles.activeInput : styles.input,
-               ]}
-               onFocus={() => setIsSecondInputFocused(true)}
-               onBlur={() => setIsSecondInputFocused(false)}
-            />
-            <TextInput
-               placeholder="Пароль"
-               style={[
-                  isThirdInputFocused
-                     ? styles.activeLastInput
-                     : styles.lastInput,
-               ]}
-               onFocus={() => setIsThirdInputFocused(true)}
-               onBlur={() => setIsThirdInputFocused(false)}
-            ></TextInput>
+               <Text style={styles.registerText}>Реєстрація</Text>
+               <KeyboardAvoidingView
+                  behavior={Platform.OS == "ios" ? "padding" : "height"}
+               >
+                  <TextInput
+                     placeholder="Логін"
+                     style={[
+                        isFirstInputFocused ? styles.activeInput : styles.input,
+                     ]}
+                     onFocus={() => setIsFirstInputFocused(true)}
+                     onBlur={() => setIsFirstInputFocused(false)}
+                     value={login}
+                     onChangeText={setLogin}
+                  />
+                  <TextInput
+                     placeholder="Адреса електронної пошти"
+                     style={[
+                        isSecondInputFocused
+                           ? styles.activeInput
+                           : styles.input,
+                     ]}
+                     onFocus={() => setIsSecondInputFocused(true)}
+                     onBlur={() => setIsSecondInputFocused(false)}
+                     value={email}
+                     onChangeText={setEmail}
+                  />
+                  <TextInput
+                     placeholder="Пароль"
+                     style={[
+                        isThirdInputFocused
+                           ? styles.activeLastInput
+                           : styles.lastInput,
+                     ]}
+                     onFocus={() => setIsThirdInputFocused(true)}
+                     onBlur={() => setIsThirdInputFocused(false)}
+                     value={password}
+                     onChangeText={setPassword}
+                  ></TextInput>
+               </KeyboardAvoidingView>
 
-            <Text style={styles.showBtn}>Показати</Text>
+               <Text style={styles.showBtn}>Показати</Text>
 
-            <TouchableOpacity style={styles.registerBtn}>
-               <Text style={styles.registerBtnText}>Зареєструватися</Text>
-            </TouchableOpacity>
+               <TouchableOpacity style={styles.registerBtn} onPress={signIn}>
+                  <Text style={styles.registerBtnText}>Зареєструватися</Text>
+               </TouchableOpacity>
 
-            <TouchableOpacity>
-               <Text style={styles.loginBtn}>
-                  Вже є акаунт? <Text style={styles.loginBtnLink}>Увійти</Text>
-               </Text>
-            </TouchableOpacity>
-         </View>
+               <TouchableOpacity>
+                  <Text style={styles.loginBtn}>
+                     Вже є акаунт?{" "}
+                     <Text style={styles.loginBtnLink}>Увійти</Text>
+                  </Text>
+               </TouchableOpacity>
+            </View>
+         </TouchableWithoutFeedback>
       </ImageBackground>
    );
 };
+
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
    imageBackground: {
@@ -82,9 +126,9 @@ const styles = StyleSheet.create({
       paddingBottom: 78,
       borderTopLeftRadius: 25,
       borderTopRightRadius: 25,
-      width: 400,
+      width: width,
+      height: height * 0.7,
       backgroundColor: "white",
-      height: 520,
       position: "relative",
    },
    userPhoto: {
@@ -184,11 +228,12 @@ const styles = StyleSheet.create({
    },
    showBtn: {
       color: "#1B4371",
-      bottom: 190,
+      bottom: 215,
       right: 40,
       position: "absolute",
       fontFamily: "Roboto-Regular",
       fontSize: 16,
+      zIndex: 2,
    },
 });
 

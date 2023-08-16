@@ -8,57 +8,91 @@ import {
    Button,
    TouchableOpacity,
    Image,
+   Dimensions,
+   KeyboardAvoidingView,
+   Platform,
+   TouchableWithoutFeedback,
+   Keyboard,
 } from "react-native";
 
 const LoginScreen = () => {
+   const [email, setEmail] = useState("");
+   const [password, setPassword] = useState("");
+
    const [isFirstInputFocused, setIsFirstInputFocused] = useState(false);
-   const [isSecondInputFocused, setIsSecondInputFocused] = useState(false);
-   const [isThirdInputFocused, setIsThirdInputFocused] = useState(false);
+   const [isInputFocused, setSecondInputFocused] = useState(false);
+
+   const logIn = (e) => {
+      e.preventDefault();
+
+      const userData = {
+         email,
+         password,
+      };
+
+      console.log(userData);
+
+      setEmail("");
+      setPassword("");
+   };
 
    return (
       <ImageBackground
          source={require("../assets/bck-photo.jpg")}
          style={styles.imageBackground}
       >
-         <View style={styles.container}>
-            <Text style={styles.registerText}>Увійти</Text>
-            <TextInput
-               placeholder="Адреса електронної пошти"
-               style={[
-                  isSecondInputFocused ? styles.activeInput : styles.input,
-               ]}
-               onFocus={() => setIsSecondInputFocused(true)}
-               onBlur={() => setIsSecondInputFocused(false)}
-            />
-            <TextInput
-               placeholder="Пароль"
-               style={[
-                  isThirdInputFocused
-                     ? styles.activeLastInput
-                     : styles.lastInput,
-               ]}
-               onFocus={() => setIsThirdInputFocused(true)}
-               onBlur={() => setIsThirdInputFocused(false)}
-            ></TextInput>
+         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+               <Text style={styles.registerText}>Увійти</Text>
 
-            <Text style={styles.showBtn}>Показати</Text>
+               <KeyboardAvoidingView
+                  behavior={Platform.OS == "ios" ? "padding" : "height"}
+               >
+                  <TextInput
+                     placeholder="Адреса електронної пошти"
+                     style={[
+                        isFirstInputFocused ? styles.activeInput : styles.input,
+                     ]}
+                     onFocus={() => setIsFirstInputFocused(true)}
+                     onBlur={() => setIsFirstInputFocused(false)}
+                     value={email}
+                     onChangeText={setEmail}
+                  />
+                  <TextInput
+                     placeholder="Пароль"
+                     style={[
+                        isInputFocused
+                           ? styles.activeLastInput
+                           : styles.lastInput,
+                     ]}
+                     onFocus={() => setSecondInputFocused(true)}
+                     onBlur={() => setSecondInputFocused(false)}
+                     value={password}
+                     onChangeText={setPassword}
+                  ></TextInput>
+               </KeyboardAvoidingView>
 
-            <TouchableOpacity style={styles.enterBtn}>
-               <Text style={styles.enterBtnText}>Увійти</Text>
-            </TouchableOpacity>
+               <Text style={styles.showBtn}>Показати</Text>
 
-            <TouchableOpacity>
-               <Text style={styles.registerBtn}>
-                  Немає акаунту?
-                  <Text style={(styles.registerBtn, styles.registerBtnLink)}>
-                     Зареєструватися
+               <TouchableOpacity style={styles.enterBtn} onPress={logIn}>
+                  <Text style={styles.enterBtnText}>Увійти</Text>
+               </TouchableOpacity>
+
+               <TouchableOpacity>
+                  <Text style={styles.registerBtn}>
+                     Немає акаунту?{" "}
+                     <Text style={(styles.registerBtn, styles.registerBtnLink)}>
+                        Зареєструватися
+                     </Text>
                   </Text>
-               </Text>
-            </TouchableOpacity>
-         </View>
+               </TouchableOpacity>
+            </View>
+         </TouchableWithoutFeedback>
       </ImageBackground>
    );
 };
+
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
    imageBackground: {
@@ -74,9 +108,9 @@ const styles = StyleSheet.create({
       paddingBottom: 78,
       borderTopLeftRadius: 25,
       borderTopRightRadius: 25,
-      width: 400,
       backgroundColor: "white",
-      height: 490,
+      width: width,
+      height: height * 0.6,
    },
    registerText: {
       color: "#212121",
@@ -170,11 +204,12 @@ const styles = StyleSheet.create({
    },
    showBtn: {
       color: "#1B4371",
-      bottom: 285,
+      bottom: 265,
       right: 40,
       position: "absolute",
       fontFamily: "Roboto-Regular",
       fontSize: 16,
+      zIndex: 2,
    },
 });
 
